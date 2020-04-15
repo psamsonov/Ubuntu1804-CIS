@@ -26,6 +26,8 @@ ubuntu1804cis_rule_1_1_1_3: true
 ubuntu1804cis_rule_1_1_1_4: true
 ubuntu1804cis_rule_1_1_1_5: true
 ubuntu1804cis_rule_1_1_1_6: true
+ubuntu1804cis_rule_1_1_1_7: true
+ubuntu1804cis_rule_1_1_1_8: true
 ubuntu1804cis_rule_1_1_2: true
 ubuntu1804cis_rule_1_1_3: true
 ubuntu1804cis_rule_1_1_4: true
@@ -46,6 +48,7 @@ ubuntu1804cis_rule_1_1_18: true
 ubuntu1804cis_rule_1_1_19: true
 ubuntu1804cis_rule_1_1_20: true
 ubuntu1804cis_rule_1_1_21: true
+ubuntu1804cis_rule_1_1_22: true
 ubuntu1804cis_rule_1_2_1: true
 ubuntu1804cis_rule_1_2_2: true
 ubuntu1804cis_rule_1_3_1: true
@@ -353,7 +356,7 @@ ubuntu1804cis_firewall_services:
 
 # Warning Banner Content (issue, issue.net, motd)
 ubuntu1804cis_warning_banner: |
-    Authorized uses only. All activity may be monitored and reported.
+   Authorized uses only. All activity may be monitored and reported.
 # End Banner
 
 ## Section 4 Vars
@@ -436,7 +439,7 @@ tmp_mount_file:
   Debian: /usr/share/systemd/tmp.mount
 tmp_mount_options:
   RedHat: mode=1777,strictatime,noexec,nodev,nosuid
-  Debian: mode=1777,strictatime,nodev,nosuid
+  Debian: mode=1777,strictatime,noexec,nodev,nosuid
 chrony_config_file:
   RedHat: /etc/chrony.conf
   Debian: /etc/chrony/chrony.conf
