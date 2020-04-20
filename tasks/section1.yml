@@ -492,7 +492,13 @@
       - patch
       - rule_1.3.1
 
-- name: "SCORED | 1.3.1 | PATCH | Ensure AIDE is installed"
+# 1.3.1 Ensure sudo is installed (Scored)     
+
+# 1.3.2 Ensure sudo commands use pty (Scored)
+
+# 1.3.3 Ensure sudo log file exists (Scored)
+
+- name: "SCORED | 1.4.1 | PATCH | Ensure AIDE is installed"
   apt:
       name:
         - aide
@@ -500,13 +506,13 @@
       state: present
       install_recommends: false
   when:
-      - ubuntu1804cis_rule_1_3_1
+      - ubuntu1804cis_rule_1_4_1
   tags:
       - level1
       - scored
       - aide
       - patch
-      - rule_1.3.1
+      - rule_1.4.1
 
 - name: "SCORED | 1.3.1 | PATCH | Stat AIDE DB"
   stat: path=/var/lib/aide/aide.db
@@ -528,7 +534,7 @@
       - patch
       - rule_1.3.1
 
-- name: "SCORED | 1.3.2 | PATCH | Ensure filesystem integrity is regularly checked"
+- name: "SCORED | 1.4.2 | PATCH | Ensure filesystem integrity is regularly checked"
   cron:
       name: Run AIDE integrity check weekly
       cron_file: "{{ ubuntu1804cis_aide_cron['cron_file'] }}"
@@ -540,16 +546,16 @@
       weekday: "{{ ubuntu1804cis_aide_cron['aide_weekday'] | default('*') }}"
       job: "{{ ubuntu1804cis_aide_cron['aide_job'] }}"
   when:
-      - ubuntu1804cis_rule_1_3_2
+      - ubuntu1804cis_rule_1_4_2
   tags:
       - level1
       - scored
       - aide
       - file_integrity
       - patch
-      - rule_1.3.2
+      - rule_1.4.2
 
-- name: "SCORED | 1.4.1 | PATCH | Ensure permissions on bootloader config are configured"
+- name: "SCORED | 1.5.1 | PATCH | Ensure permissions on bootloader config are configured"
   file:
       path: "/boot/grub/grub.cfg"
       owner: root
@@ -557,15 +563,15 @@
       mode: 0600
   when:
       - ansible_os_family == "Debian"
-      - ubuntu1804cis_rule_1_4_1
+      - ubuntu1804cis_rule_1_5_1
   tags:
       - level1
       - scored
       - grub
       - patch
-      - rule_1.4.1
+      - rule_1.5.1
 
-- name: "SCORED | 1.4.2 | PATCH | Ensure bootloader password is set - generate password"
+- name: "SCORED | 1.5.2 | PATCH | Ensure bootloader password is set - generate password"
   shell: "set -o pipefail;
         if [ '{{ ubuntu1804cis_bootloader_password }}' == 'random' ];
         then PASSWORD=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c12); else PASSWORD='{{ ubuntu1804cis_bootloader_password }}';
@@ -576,16 +582,16 @@
     executable: /bin/bash
   when:
       - ubuntu1804cis_set_boot_pass
-      - ubuntu1804cis_rule_1_4_2
+      - ubuntu1804cis_rule_1_5_2
   tags:
       - level1
       - scored
       - grub
       - patch
-      - rule_1.4.2
+      - rule_1.5.2
       - notimplemented
 
-- name: "SCORED | 1.4.2 | PATCH | Ensure bootloader password is set - generate config"
+- name: "SCORED | 1.5.2 | PATCH | Ensure bootloader password is set - generate config"
   copy:
     dest:  /etc/grub.d/00_password
     content: "cat << EOF\nset superusers=\"root\"\npassword_pbkdf2 root {{ grub_pass.stdout }}\nEOF"
@@ -595,15 +601,15 @@
   notify: generate new grub config
   when:
     - ubuntu1804cis_set_boot_pass and grub_pass is defined and grub_pass.stdout is defined and grub_pass.stdout | length >0
-    - ubuntu1804cis_rule_1_4_2
+    - ubuntu1804cis_rule_1_5_2
   tags:
     - level1
     - scored
     - grub
     - patch
-    - rule_1.4.2
+    - rule_1.5.2
 
-- name: "SCORED | 1.4.2 | PATCH | Ensure bootloader password is set - disable password for system boot"
+- name: "SCORED | 1.5.2 | PATCH | Ensure bootloader password is set - disable password for system boot"
   replace:
     path:  /etc/grub.d/10_linux
     regexp: '--class os"'
@@ -611,16 +617,16 @@
   notify: generate new grub config
   when:
     - ubuntu1804cis_set_boot_pass
-    - ubuntu1804cis_rule_1_4_2
-    - ubuntu1804cis_rule_1_4_2_disable_password
+    - ubuntu1804cis_rule_1_5_2
+    - ubuntu1804cis_rule_1_5_2_disable_password
   tags:
     - level1
     - scored
     - grub
     - patch
-    - rule_1.4.2
+    - rule_1.5.2
 
-- name: "NOTSCORED | 1.4.3 | PATCH | Ensure authentication required for single user mode"
+- name: "NOTSCORED | 1.5.3 | PATCH | Ensure authentication required for single user mode"
   shell: "set -o pipefail;
           if [ '{{ ubuntu1804cis_root_password }}' == 'random' ];
           then PASSWORD=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c24); else PASSWORD='{{ ubuntu1804cis_root_password }}';
@@ -629,49 +635,18 @@
   args:
     executable: /bin/bash
   when:
-      - ubuntu1804cis_rule_1_4_3
+      - ubuntu1804cis_rule_1_5_3
       - current_root_password.stdout | length > 0
   tags:
       - level1
       - notscored
       - patch
-      - rule_1.4.3
+      - rule_1.5.3
       - notimplemented
 
-- name: "SCORED | 1.5.1 | PATCH | Ensure core dumps are restricted"
-  lineinfile:
-      state: present
-      dest: /etc/security/limits.conf
-      regexp: '^#?\\*.*core'
-      line: '*                hard    core            0'
-      insertbefore: '^# End of file'
-  when:
-      - ubuntu1804cis_rule_1_5_1
-  tags:
-      - level1
-      - scored
-      - limits
-      - patch
-      - rule_1.5.1
+# 1.5.4 Ensure interactive boot is not enabled (Not Scored)
 
-- name: "SCORED | 1.5.1 | PATCH | Ensure core dumps are restricted"
-  sysctl:
-      name: fs.suid_dumpable
-      value: "0"
-      state: present
-      reload: true
-      sysctl_set: true
-      ignoreerrors: true
-  when:
-      - ubuntu1804cis_rule_1_5_1
-  tags:
-      - level1
-      - scored
-      - sysctl
-      - patch
-      - rule_1.5.1
-
-- name: "NOTSCORED | 1.5.2 | PATCH | Ensure XD/NX support is enabled"
+- name: "NOTSCORED | 1.6.1 | PATCH | Ensure XD/NX support is enabled"
   shell: |
       set -o pipefail;
       dmesg | grep -E "NX|XD" | grep " active"
@@ -679,16 +654,16 @@
       executable: /bin/bash
   changed_when: false
   when:
-      - ubuntu1804cis_rule_1_5_2
+      - ubuntu1804cis_rule_1_6_1
       - not ubuntu1804cis_skip_for_travis
   tags:
       - level1
       - notscored
       - patch
-      - rule_1.5.2
+      - rule_1.6.1
       - notimplemented
 
-- name: "SCORED | 1.5.3 | PATCH | Ensure address space layout randomization (ASLR) is enabled"
+- name: "SCORED | 1.6.2 | PATCH | Ensure address space layout randomization (ASLR) is enabled"
   sysctl:
       name: kernel.randomize_va_space
       value: "2"
@@ -697,37 +672,107 @@
       sysctl_set: true
       ignoreerrors: true
   when:
-      - ubuntu1804cis_rule_1_5_3
+      - ubuntu1804cis_rule_1_6_2
   tags:
       - level1
       - scored
       - patch
       - sysctl
-      - rule_1.5.3
+      - rule_1.6.2
 
-- name: "SCORED | 1.5.4 | PATCH | Ensure prelink is disabled"
+- name: "SCORED | 1.6.3 | PATCH | Ensure prelink is disabled"
   command: prelink -ua
   when:
       - prelink_installed.rc == 0
-      - ubuntu1804cis_rule_1_5_4
+      - ubuntu1804cis_rule_1_6_3
   tags:
       - level1
       - scored
       - patch
-      - rule_1.5.4
+      - rule_1.6.3
 
-- name: "SCORED | 1.5.4 | PATCH | Ensure prelink is disabled"
+- name: "SCORED | 1.6.3 | PATCH | Ensure prelink is disabled"
   apt:
       name: prelink
       state: absent
   when:
-      - ubuntu1804cis_rule_1_5_4
+      - ubuntu1804cis_rule_1_6_3
   tags:
       - level1
       - scored
       - patch
-      - rule_1.5.4
+      - rule_1.6.3
 
+- name: "SCORED | 1.6.4 | PATCH | Ensure core dumps are restricted"
+  lineinfile:
+      state: present
+      dest: /etc/security/limits.conf
+      regexp: '^#?\\*.*core'
+      line: '*                hard    core            0'
+      insertbefore: '^# End of file'
+  when:
+      - ubuntu1804cis_rule_1_5_4
+  tags:
+      - level1
+      - scored
+      - limits
+      - patch
+      - rule_1.6.4
+
+- name: "SCORED | 1.6.4 | PATCH | Ensure core dumps are restricted"
+  sysctl:
+      name: fs.suid_dumpable
+      value: "0"
+      state: present
+      reload: true
+      sysctl_set: true
+      ignoreerrors: true
+  when:
+      - ubuntu1804cis_rule_1_6_4
+  tags:
+      - level1
+      - scored
+      - sysctl
+      - patch
+      - rule_1.6.4
+
+- name: "SCORED | 1.7.1.1 | PATCH | Ensure AppArmor is installed
+  command: /bin/true
+  changed_when: false
+  when:
+      - ubuntu1804cis_rule_1_6_3
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_1.6.3
+      - notimplemented
+
+- name: "SCORED | 1.7.1.2 | PATCH | Ensure AppArmor is not disabled in bootloader configuration"
+  command: /bin/true
+  changed_when: false
+  when:
+      - ubuntu1804cis_rule_1_7_1_2
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_1.7.1.2
+      - notimplemented
+
+- name: "SCORED | 1.7.1.3 | PATCH | Ensure all AppArmor Profiles are enforcing"
+  command: /bin/true
+  changed_when: false
+  when:
+      - ubuntu1804cis_rule_1_7_1_3
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_1.7.1.3
+      - notimplemented
+
+# Not in spec
 - name: "SCORED | 1.6.1.1 | PATCH | Ensure SELinux is not disabled in bootloader configuration"
   replace:
       dest: /etc/default/grub
@@ -744,6 +789,7 @@
       - patch
       - rule_1.6.1.1
 
+# Not in spec
 - name: "SCORED | 1.6.1.2 | PATCH | Ensure the SELinux state is enforcing"
   command: /bin/true
   changed_when: false
@@ -756,6 +802,7 @@
       - rule_1.6.1.2
       - notimplemented
 
+# Not in spec
 - name: "SCORED | 1.6.1.3 | PATCH | Ensure SELinux policy is configured"
   command: /bin/true
   changed_when: false
@@ -780,83 +827,46 @@
       - rule_1.6.1.4
       - notimplemented
 
-- name: "SCORED | 1.6.2.1 | PATCH | Ensure AppArmor is not disabled in bootloader configuration"
-  command: /bin/true
-  changed_when: false
-  when:
-      - ubuntu1804cis_rule_1_6_2_1
-  tags:
-      - level1
-      - scored
-      - patch
-      - rule_1.6.2.1
-      - notimplemented
-
-- name: "SCORED | 1.6.2.2 | PATCH | Ensure all AppArmor Profiles are enforcing"
-  command: /bin/true
-  changed_when: false
-  when:
-      - ubuntu1804cis_rule_1_6_2_2
-  tags:
-      - level1
-      - scored
-      - patch
-      - rule_1.6.2.2
-      - notimplemented
-
-- name: "SCORED | 1.6.3 | PATCH | Ensure SELinux or AppArmor are installed"
-  command: /bin/true
-  changed_when: false
-  when:
-      - ubuntu1804cis_rule_1_6_3
-  tags:
-      - level1
-      - scored
-      - patch
-      - rule_1.6.3
-      - notimplemented
-
-
-- name: "SCORED | 1.7.1.1 | PATCH | Ensure message of the day is configured properly"
+- name: "SCORED | 1.8.1.1 | PATCH | Ensure message of the day is configured properly"
   template:
       src: etc/motd.j2
       dest: /etc/motd
   when:
-      - ubuntu1804cis_rule_1_7_1_1
+      - ubuntu1804cis_rule_1_8_1_1
   tags:
       - level1
       - scored
       - patch
       - banner
-      - rule_1.7.1.1
+      - rule_1.8.1.1
 
-- name: "NOTSCORED | 1.7.1.2 | PATCH | Ensure local login warning banner is configured properly"
+- name: "SCORED | 1.8.1.2 | PATCH | Ensure local login warning banner is configured properly"
   template:
       src: etc/issue.j2
       dest: /etc/issue
   when:
-      - ubuntu1804cis_rule_1_7_1_2
+      - ubuntu1804cis_rule_1_8_1_2
   tags:
       - level1
-      - notscored
+      - scored
       - patch
       - banner
-      - rule_1.7.1.2
+      - rule_1.8.1.2
 
-- name: "NOTSCORED | 1.7.1.3 | PATCH | Ensure remote login warning banner is configured properly"
+- name: "SCORED | 1.8.1.3 | PATCH | Ensure remote login warning banner is configured properly"
   template:
       src: etc/issue.net.j2
       dest: /etc/issue.net
   when:
-      - ubuntu1804cis_rule_1_7_1_3
+      - ubuntu1804cis_rule_1_8_1_3
   tags:
       - level1
-      - notscored
+      - scored
       - patch
       - banner
-      - rule_1.7.1.3
+      - rule_1.8.1.3
 
-- name: "NOTSCORED | 1.7.1.4 | PATCH | Ensure permissions on /etc/motd are configured"
+- name: "NOTSCORED | 1.8.1.4 | PATCH | Ensure permissions on /etc/motd are configured"
   file:
       dest: /etc/motd
       state: file
@@ -864,15 +874,15 @@
       group: root
       mode: 0644
   when:
-      - ubuntu1804cis_rule_1_7_1_4
+      - ubuntu1804cis_rule_1_8_1_4
   tags:
       - level1
       - notscored
       - patch
       - perms
-      - rule_1.7.1.4
+      - rule_1.8.1.4
 
-- name: "SCORED | 1.7.1.5 | PATCH | Ensure permissions on /etc/issue are configured"
+- name: "SCORED | 1.8.1.5 | PATCH | Ensure permissions on /etc/issue are configured"
   file:
       dest: /etc/issue
       state: file
@@ -880,15 +890,15 @@
       group: root
       mode: 0644
   when:
-      - ubuntu1804cis_rule_1_7_1_5
+      - ubuntu1804cis_rule_1_8_1_5
   tags:
       - level1
       - scored
       - patch
       - perms
-      - rule_1.7.1.5
+      - rule_1.8.1.5
 
-- name: "NOTSCORED | 1.7.1.6 | PATCH | Ensure permissions on /etc/issue.net are configured"
+- name: "NOTSCORED | 1.8.1.6 | PATCH | Ensure permissions on /etc/issue.net are configured"
   file:
       dest: /etc/issue.net
       state: file
@@ -896,15 +906,15 @@
       group: root
       mode: 0644
   when:
-      - ubuntu1804cis_rule_1_7_1_6
+      - ubuntu1804cis_rule_1_8_1_6
   tags:
       - level1
       - notscored
       - patch
       - perms
-      - rule_1.7.1.6
+      - rule_1.8.1.6
 
-- name: "SCORED | 1.7.2 | PATCH | Ensure GDM login banner is configured"
+- name: "SCORED | 1.8.2 | PATCH | Ensure GDM login banner is configured"
   lineinfile:
       dest: "{{ item.file }}"
       regexp: "{{ item.regexp }}"
@@ -923,20 +933,20 @@
       - { file: '/etc/dconf/db/gdm.d/01-banner-message', regexp: 'banner-message-text', line: "banner-message-text='{{ ubuntu1804cis_warning_banner }}' " }
   when:
       - ubuntu1804cis_gui
-      - ubuntu1804cis_rule_1_7_2
+      - ubuntu1804cis_rule_1_8_2
   tags:
       - level1
       - scored
       - patch
       - banner
-      - rule_1.7.2
+      - rule_1.8.2
 
-- name: "NOTSCORED | 1.8 | PATCH | Ensure updates, patches, and additional security software are installed"
+- name: "NOTSCORED | 1.9 | PATCH | Ensure updates, patches, and additional security software are installed"
   apt:
       upgrade: dist
   tags:
       - level1
       - notscored
       - patch
-      - rule_1.8
+      - rule_1.9
       - skip_ansible_lint
