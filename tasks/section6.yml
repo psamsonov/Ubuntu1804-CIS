@@ -25,9 +25,9 @@
       - patch
       - rule_6.1.2
 
-- name: "SCORED | 6.1.3 | PATCH | Ensure permissions on /etc/shadow are configured"
+- name: "SCORED | 6.1.3 | PATCH | Ensure permissions on /etc/gshadow- are configured"
   file:
-      dest: /etc/shadow
+      dest: /etc/gshadow-
       owner: root
       group: shadow
       mode: 0640
@@ -39,12 +39,13 @@
       - patch
       - rule_6.1.3
 
-- name: "SCORED | 6.1.4 | PATCH | Ensure permissions on /etc/group are configured"
+
+- name: "SCORED | 6.1.4 | PATCH | Ensure permissions on /etc/shadow are configured"
   file:
-      dest: /etc/group
+      dest: /etc/shadow
       owner: root
-      group: root
-      mode: 0644
+      group: shadow
+      mode: 0640
   when:
       - ubuntu1804cis_rule_6_1_4
   tags:
@@ -53,12 +54,12 @@
       - patch
       - rule_6.1.4
 
-- name: "SCORED | 6.1.5 | PATCH | Ensure permissions on /etc/gshadow are configured"
+- name: "SCORED | 6.1.5 | PATCH | Ensure permissions on /etc/group are configured"
   file:
-      dest: /etc/gshadow
+      dest: /etc/group
       owner: root
-      group: shadow
-      mode: 0640
+      group: root
+      mode: 0644
   when:
       - ubuntu1804cis_rule_6_1_5
   tags:
@@ -66,6 +67,7 @@
       - scored
       - patch
       - rule_6.1.5
+
 
 - name: "SCORED | 6.1.6 | PATCH | Ensure permissions on /etc/passwd- are configured"
   file:
@@ -109,9 +111,9 @@
       - patch
       - rule_6.1.8
 
-- name: "SCORED | 6.1.9 | PATCH | Ensure permissions on /etc/gshadow- are configured"
+- name: "SCORED | 6.1.9 | PATCH | Ensure permissions on /etc/gshadow are configured"
   file:
-      dest: /etc/gshadow-
+      dest: /etc/gshadow
       owner: root
       group: shadow
       mode: 0640
@@ -210,11 +212,9 @@
       - patch
       - rule_6.2.2
 
-- name: "SCORED | 6.2.3 | PATCH | Ensure no legacy '+' entries exist in /etc/shadow"
-  lineinfile:
-      regexp: '^\+'
-      state: absent
-      path: /etc/shadow
+- name: "SCORED | 6.2.3 | PATCH | Ensure all users' home directories exist"
+  command: /bin/true
+  changed_when: false
   when:
       - ubuntu1804cis_rule_6_2_3
   tags:
@@ -222,12 +222,13 @@
       - scored
       - patch
       - rule_6.2.3
+      - notimplemented
 
-- name: "SCORED | 6.2.4 | PATCH | Ensure no legacy '+' entries exist in /etc/group"
+- name: "SCORED | 6.2.4 | PATCH | Ensure no legacy '+' entries exist in /etc/shadow"
   lineinfile:
       regexp: '^\+'
       state: absent
-      path: /etc/group
+      path: /etc/shadow
   when:
       - ubuntu1804cis_rule_6_2_4
   tags:
@@ -236,13 +237,12 @@
       - patch
       - rule_6.2.4
 
-- name: "SCORED | 6.2.5 | PATCH | Ensure root is the only UID 0 account"
-  command: passwd -l {{ item }}
-  changed_when: false
-  failed_when: false
-  with_items: "{{ uid_zero_accounts_except_root.stdout_lines }}"
+- name: "SCORED | 6.2.5 | PATCH | Ensure no legacy '+' entries exist in /etc/group"
+  lineinfile:
+      regexp: '^\+'
+      state: absent
+      path: /etc/group
   when:
-      - uid_zero_accounts_except_root.rc
       - ubuntu1804cis_rule_6_2_5
   tags:
       - level1
@@ -250,19 +250,33 @@
       - patch
       - rule_6.2.5
 
-- name: "SCORED | 6.2.6 | PATCH | Ensure root PATH Integrity"
-  command: /bin/true
+- name: "SCORED | 6.2.6 | PATCH | Ensure root is the only UID 0 account"
+  command: passwd -l {{ item }}
   changed_when: false
+  failed_when: false
+  with_items: "{{ uid_zero_accounts_except_root.stdout_lines }}"
   when:
+      - uid_zero_accounts_except_root.rc
       - ubuntu1804cis_rule_6_2_6
   tags:
       - level1
       - scored
       - patch
       - rule_6.2.6
+
+- name: "SCORED | 6.2.7 | PATCH | Ensure root PATH Integrity"
+  command: /bin/true
+  changed_when: false
+  when:
+      - ubuntu1804cis_rule_6_2_7
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_6.2.7
       - notimplemented
 
-- name: "SCORED | 6.2.6 | PATCH | Ensure root PATH Integrity"
+- name: "SCORED | 6.2.7 | PATCH | Ensure root PATH Integrity"
   shell: |
     set -o pipefail;
     sudopath=($(grep secure_path /etc/sudoers | cut -f2 -d= |cut -f2 -d\"))
@@ -280,14 +294,14 @@
   changed_when: false
   check_mode: false
   when:
-      - ubuntu1804cis_rule_6_2_6
+      - ubuntu1804cis_rule_6_2_7
   tags:
       - level1
       - scored
       - patch
-      - rule_6.2.6
+      - rule_6.2.7
 
-- name: "SCORED | 6.2.6 | PATCH | Ensure root PATH Integrity"
+- name: "SCORED | 6.2.7 | PATCH | Ensure root PATH Integrity"
   lineinfile:
       dest: /etc/sudoers
       regexp: "(.*secure_path=).*"
@@ -299,19 +313,7 @@
       - level1
       - scored
       - patch
-      - rule_6.2.6
-
-- name: "SCORED | 6.2.7 | PATCH | Ensure all users' home directories exist"
-  command: /bin/true
-  changed_when: false
-  when:
-      - ubuntu1804cis_rule_6_2_7
-  tags:
-      - level1
-      - scored
-      - patch
       - rule_6.2.7
-      - notimplemented
 
 - name: "SCORED | 6.2.8 | PATCH | Ensure users' home directories permissions are 750 or more restrictive"
   shell: |
@@ -377,6 +379,8 @@
       - scored
       - patch
       - rule_6.2.12
+
+# 6.2.13 Ensure users' .netrc Files are not group or world accessible (Scored)
 
 - name: "SCORED | 6.2.14 | PATCH | Ensure no users have .rhosts files"
   file:
@@ -450,3 +454,5 @@
       - patch
       - rule_6.2.19
       - notimplemented
+
+# 6.2.20 Ensure shadow group is empty (Scored)
