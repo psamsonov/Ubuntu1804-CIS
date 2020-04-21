@@ -230,21 +230,6 @@
       - sysctl
       - rule_3.3.2
 
-# Not in the 2.0.1 spec, leaving for now. Do we need IPv6? 
-# If yes, implement section 3.5.4.2 Configure IPv6 ip6tables
-- name: "NOTSCORED | 3.3.3 | PATCH | Ensure IPv6 is disabled"
-  lineinfile:
-      dest: /etc/modprobe.d/CIS.conf
-      regexp: "^(#)?options ipv6 disable="
-      line: "options ipv6 disable=1"
-      create: true
-  when: not ubuntu1804cis_ipv6_required
-  tags:
-      - level1
-      - notscored
-      - patch
-      - rule_3.3.3
-
 - name: "SCORED | 3.3.1 | PATCH | Ensure TCP Wrappers is installed"
   apt:
       name: "{{ tcp_wrapper_package[ansible_os_family] }}"
@@ -541,4 +526,15 @@
       - rule_3.7
       - notimplemented
 
-# 3.7 Disable IPv6 (Not Scored)
+- name: "NOTSCORED | 3.7 | PATCH | Ensure IPv6 is disabled"
+  lineinfile:
+      dest: /etc/modprobe.d/CIS.conf
+      regexp: "^(#)?options ipv6 disable="
+      line: "options ipv6 disable=1"
+      create: true
+  when: not ubuntu1804cis_ipv6_required
+  tags:
+      - level1
+      - notscored
+      - patch
+      - rule_3.7
