@@ -58,13 +58,16 @@ ubuntu1804cis_rule_1_5_1: true
 ubuntu1804cis_rule_1_5_2: true
 ubuntu1804cis_rule_1_5_3: true
 ubuntu1804cis_rule_1_5_4: true
+ubuntu1804cis_rule_1_6_1: true
 ubuntu1804cis_rule_1_6_1_1: true
 ubuntu1804cis_rule_1_6_1_2: true
 ubuntu1804cis_rule_1_6_1_3: true
 ubuntu1804cis_rule_1_6_1_4: true
+ubuntu1804cis_rule_1_6_2: true
 ubuntu1804cis_rule_1_6_2_1: true
 ubuntu1804cis_rule_1_6_2_2: true
 ubuntu1804cis_rule_1_6_3: true
+ubuntu1804cis_rule_1_6_4: true
 ubuntu1804cis_rule_1_7_1_1: true
 ubuntu1804cis_rule_1_7_1_2: true
 ubuntu1804cis_rule_1_7_1_3: true
@@ -72,6 +75,14 @@ ubuntu1804cis_rule_1_7_1_4: true
 ubuntu1804cis_rule_1_7_1_5: true
 ubuntu1804cis_rule_1_7_1_6: true
 ubuntu1804cis_rule_1_7_2: true
+ubuntu1804cis_rule_1_8_1_1: true
+ubuntu1804cis_rule_1_8_1_2: true
+ubuntu1804cis_rule_1_8_1_3: true
+ubuntu1804cis_rule_1_8_1_4: true
+ubuntu1804cis_rule_1_8_1_5: true
+ubuntu1804cis_rule_1_8_1_6: true
+ubuntu1804cis_rule_1_8_2: true
+ubuntu1804cis_rule_1_9: true
 
 # Section 2 rules
 ubuntu1804cis_rule_2_1_1: true
@@ -144,6 +155,9 @@ ubuntu1804cis_rule_4_1_1_1: true
 ubuntu1804cis_rule_4_1_1_2: true
 ubuntu1804cis_rule_4_1_1_3: true
 ubuntu1804cis_rule_4_1_2: true
+ubuntu1804cis_rule_4_1_2_1: true
+ubuntu1804cis_rule_4_1_2_2: true
+ubuntu1804cis_rule_4_1_2_3: true
 ubuntu1804cis_rule_4_1_3: true
 ubuntu1804cis_rule_4_1_4: true
 ubuntu1804cis_rule_4_1_5: true
@@ -166,6 +180,7 @@ ubuntu1804cis_rule_4_2_1_2: true
 ubuntu1804cis_rule_4_2_1_3: true
 ubuntu1804cis_rule_4_2_1_4: true
 ubuntu1804cis_rule_4_2_1_5: true
+ubuntu1804cis_rule_4_2_1_6: true
 ubuntu1804cis_rule_4_2_2_1: true
 ubuntu1804cis_rule_4_2_2_2: true
 ubuntu1804cis_rule_4_2_2_3: true
@@ -199,6 +214,9 @@ ubuntu1804cis_rule_5_2_13: true
 ubuntu1804cis_rule_5_2_14: true
 ubuntu1804cis_rule_5_2_15: true
 ubuntu1804cis_rule_5_2_16: true
+ubuntu1804cis_rule_5_2_17: true
+ubuntu1804cis_rule_5_2_18: true
+ubuntu1804cis_rule_5_2_19: true
 ubuntu1804cis_rule_5_3_1: true
 ubuntu1804cis_rule_5_3_2: true
 ubuntu1804cis_rule_5_3_3: true

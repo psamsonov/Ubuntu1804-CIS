@@ -647,9 +647,8 @@
 # 1.5.4 Ensure interactive boot is not enabled (Not Scored)
 
 - name: "NOTSCORED | 1.6.1 | PATCH | Ensure XD/NX support is enabled"
-  shell: |
-      set -o pipefail;
-      dmesg | grep -E "NX|XD" | grep " active"
+  shell: "set -o pipefail;
+         dmesg | grep -E \"NX|XD\" | grep \" active\" "
   args:
       executable: /bin/bash
   changed_when: false
@@ -736,7 +735,7 @@
       - patch
       - rule_1.6.4
 
-- name: "SCORED | 1.7.1.1 | PATCH | Ensure AppArmor is installed
+- name: "SCORED | 1.7.1.1 | PATCH | Ensure AppArmor is installed"
   command: /bin/true
   changed_when: false
   when:

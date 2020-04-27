@@ -26,6 +26,9 @@
   become: true
   when: ubuntu1804cis_section1
   tags: section1
+  vars:
+    ubuntu1804cis_root_password: random
+
 
 - include: section2.yml
   become: true
