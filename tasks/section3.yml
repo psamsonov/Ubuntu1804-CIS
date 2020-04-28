@@ -1,22 +1,5 @@
 ---
-- name: "SCORED | 3.1.1 | PATCH | Ensure IP forwarding is disabled"
-  sysctl:
-      name: net.ipv4.ip_forward
-      value: "0"
-      state: present
-      reload: true
-      ignoreerrors: true
-  when: not ubuntu1804cis_is_router
-  notify:
-      - sysctl flush ipv4 route table
-  tags:
-      - level1
-      - scored
-      - patch
-      - sysctl
-      - rule_3.1.1
-
-- name: "SCORED | 3.1.2 | PATCH | Ensure packet redirect sending is disabled"
+- name: "SCORED | 3.1.1 | PATCH | Ensure packet redirect sending is disabled"
   sysctl:
       name: '{{ item.name }}'
       value: '{{ item.value }}'
@@ -35,7 +18,27 @@
       - scored
       - patch
       - sysctl
+      - rule_3.1.1
+
+
+- name: "SCORED | 3.1.2 | PATCH | Ensure IP forwarding is disabled"
+  sysctl:
+      name: net.ipv4.ip_forward
+      value: "0"
+      state: present
+      reload: true
+      ignoreerrors: true
+  when: not ubuntu1804cis_is_router
+  notify:
+      - sysctl flush ipv4 route table
+  tags:
+      - level1
+      - scored
+      - patch
+      - sysctl
       - rule_3.1.2
+
+
 
 - name: "SCORED | 3.2.1 | PATCH | Ensure source routed packets are not accepted"
   sysctl:
@@ -185,7 +188,7 @@
       - sysctl
       - rule_3.2.8
 
-- name: "SCORED | 3.3.1 | PATCH | Ensure IPv6 router advertisements are not accepted"
+- name: "SCORED | 3.2.9 | PATCH | Ensure IPv6 router advertisements are not accepted"
   sysctl:
       name: '{{ item.name }}'
       value: '{{ item.value }}'
@@ -204,7 +207,7 @@
       - scored
       - patch
       - sysctl
-      - rule_3.3.1
+      - rule_3.2.9
 
 - name: "SCORED | 3.3.2 | PATCH | Ensure IPv6 redirects are not accepted"
   sysctl:
@@ -227,20 +230,7 @@
       - sysctl
       - rule_3.3.2
 
-- name: "NOTSCORED | 3.3.3 | PATCH | Ensure IPv6 is disabled"
-  lineinfile:
-      dest: /etc/modprobe.d/CIS.conf
-      regexp: "^(#)?options ipv6 disable="
-      line: "options ipv6 disable=1"
-      create: true
-  when: not ubuntu1804cis_ipv6_required
-  tags:
-      - level1
-      - notscored
-      - patch
-      - rule_3.3.3
-
-- name: "SCORED | 3.4.1 | PATCH | Ensure TCP Wrappers is installed"
+- name: "SCORED | 3.3.1 | PATCH | Ensure TCP Wrappers is installed"
   apt:
       name: "{{ tcp_wrapper_package[ansible_os_family] }}"
       state: present
@@ -249,9 +239,9 @@
       - level1
       - scored
       - patch
-      - rule_3.4.1
+      - rule_3.3.1
 
-- name: "SCORED | 3.4.2 | PATCH | Ensure /etc/hosts.allow is configured"
+- name: "SCORED | 3.3.2 | PATCH | Ensure /etc/hosts.allow is configured"
   template:
       src: hosts.allow.j2
       dest: /etc/hosts.allow
@@ -262,9 +252,9 @@
       - level1
       - scored
       - patch
-      - rule_3.4.2
+      - rule_3.3.2
 
-- name: "SCORED | 3.4.3 | PATCH | Ensure /etc/hosts.deny is configured"
+- name: "SCORED | 3.3.3 | PATCH | Ensure /etc/hosts.deny is configured"
   lineinfile:
       dest: /etc/hosts.deny
       regexp: "^(#)?ALL"
@@ -273,9 +263,9 @@
       - level1
       - scored
       - patch
-      - rule_3.4.3
+      - rule_3.3.3
 
-- name: "SCORED | 3.4.4 | PATCH | Ensure permissions on /etc/hosts.allow are configured"
+- name: "SCORED | 3.3.4 | PATCH | Ensure permissions on /etc/hosts.allow are configured"
   file:
       dest: /etc/hosts.allow
       owner: root
@@ -285,9 +275,9 @@
       - level1
       - scored
       - patch
-      - rule_3.4.4
+      - rule_3.3.4
 
-- name: "SCORED | 3.4.5 | PATCH | Ensure permissions on /etc/hosts.deny are configured"
+- name: "SCORED | 3.3.5 | PATCH | Ensure permissions on /etc/hosts.deny are configured"
   file:
       dest: /etc/hosts.deny
       owner: root
@@ -297,9 +287,9 @@
       - level1
       - scored
       - patch
-      - rule_3.4.5
+      - rule_3.3.5
 
-- name: "NOTSCORED | 3.5.1 | PATCH | Ensure DCCP is disabled"
+- name: "NOTSCORED | 3.4.1 | PATCH | Ensure DCCP is disabled"
   lineinfile:
       dest: /etc/modprobe.d/CIS.conf
       regexp: "^(#)?install dccp(\\s|$)"
@@ -309,9 +299,9 @@
       - level1
       - notscored
       - patch
-      - rule_3.5.1
+      - rule_3.4.1
 
-- name: "NOTSCORED | 3.5.2 | PATCH | Ensure SCTP is disabled"
+- name: "NOTSCORED | 3.4.2 | PATCH | Ensure SCTP is disabled"
   lineinfile:
       dest: /etc/modprobe.d/CIS.conf
       regexp: "^(#)?install sctp(\\s|$)"
@@ -321,9 +311,9 @@
       - level1
       - notscored
       - patch
-      - rule_3.5.2
+      - rule_3.4.2
 
-- name: "NOTSCORED | 3.5.3 | PATCH | Ensure RDS is disabled"
+- name: "NOTSCORED | 3.4.3 | PATCH | Ensure RDS is disabled"
   lineinfile:
       dest: /etc/modprobe.d/CIS.conf
       regexp: "^(#)?install rds(\\s|$)"
@@ -333,9 +323,9 @@
       - level1
       - notscored
       - patch
-      - rule_3.5.3
+      - rule_3.4.3
 
-- name: "NOTSCORED | 3.5.4 | PATCH | Ensure TIPC is disabled"
+- name: "NOTSCORED | 3.4.4 | PATCH | Ensure TIPC is disabled"
   lineinfile:
       dest: /etc/modprobe.d/CIS.conf
       regexp: "^(#)?install tipc(\\s|$)"
@@ -345,9 +335,13 @@
       - level1
       - notscored
       - patch
-      - rule_3.5.4
+      - rule_3.4.4
 
-- name: "SCORED | 3.6 | PATCH | Ensure firewalld is installed and started | CUSTOM"
+
+# This section looks like the implementation is up to the administrator
+# Should probably review later
+
+- name: "SCORED | 3.5 | PATCH | Ensure firewalld is installed and started | CUSTOM"
   apt:
       name: firewalld
       state: present
@@ -359,9 +353,9 @@
       - level1
       - scored
       - patch
-      - rule_3.6
+      - rule_3.5
 
-- name: "SCORED | 3.6 | PATCH | Ensure firewalld is installed and started | CUSTOM"
+- name: "SCORED | 3.5 | PATCH | Ensure firewalld is installed and started | CUSTOM"
   service:
       name: firewalld
       state: started
@@ -373,9 +367,9 @@
       - level1
       - scored
       - patch
-      - rule_3.6
+      - rule_3.5
 
-- name: "SCORED | 3.6.1 | PATCH | Ensure iptables is installed"
+- name: "SCORED | 3.5.1 | PATCH | Ensure iptables is installed"
   apt:
       name: iptables
       state: present
@@ -387,9 +381,9 @@
       - level1
       - scored
       - patch
-      - rule_3.6.1
+      - rule_3.5.1
 
-- name: "SCORED | 3.6.1 | PATCH | Ensure iptables is installed and started"
+- name: "SCORED | 3.5.1 | PATCH | Ensure iptables is installed and started"
   service:
       name: iptables
       state: started
@@ -403,7 +397,7 @@
       - patch
       - rule_3.6.1
 
-- name: "SCORED | 3.6.2 | PATCH | Ensure default deny firewall policy"
+- name: "SCORED | 3.5.2 | PATCH | Ensure default deny firewall policy"
   lineinfile:
       dest: /etc/firewalld/firewalld.conf
       regexp: "^DefaultZone"
@@ -417,7 +411,7 @@
       - patch
       - rule_3.6.2
 
-- name: "SCORED | 3.6.2 | PATCH | Ensure default deny firewall policy"
+- name: "SCORED | 3.5.2.2 | PATCH | Ensure default deny firewall policy"
   firewalld:
       state: enabled
       zone: drop
@@ -429,48 +423,9 @@
       - level1
       - scored
       - patch
-      - rule_3.6.2
+      - rule_3.5.2.2
 
-- name: "SCORED | 3.6.2 | PATCH | Ensure default deny firewall policy"
-  command: /bin/true
-  changed_when: false
-  when:
-      - ubuntu1804cis_firewall == "iptables"
-      - ubuntu1804cis_setup_firewall
-  tags:
-      - level1
-      - scored
-      - patch
-      - rule_3.6.2
-      - notimplemented
-
-- name: "SCORED | 3.6.3 | PATCH | Ensure loopback traffic is configured"
-  command: /bin/true
-  changed_when: false
-  when:
-      - ubuntu1804cis_firewall == "iptables"
-      - ubuntu1804cis_setup_firewall
-  tags:
-      - level1
-      - scored
-      - patch
-      - rule_3.6.3
-      - notimplemented
-
-- name: "NOTSCORED | 3.6.4 | PATCH | Ensure outbound and established connections are configured"
-  command: /bin/true
-  changed_when: false
-  when:
-      - ubuntu1804cis_firewall == "iptables"
-      - ubuntu1804cis_setup_firewall
-  tags:
-      - level1
-      - notscored
-      - patch
-      - rule_3.6.4
-      - notimplemented
-
-- name: "SCORED | 3.6.5 | PATCH | Ensure firewall rules exist for all open ports"
+- name: "NOTSCORED | 3.5.2.5 | PATCH | Ensure firewall rules exist for all open ports"
   firewalld:
       service: "{{ item }}"
       state: enabled
@@ -484,11 +439,19 @@
   with_items: "{{ ubuntu1804cis_firewall_services }}"
   tags:
       - level1
-      - scored
+      - notscored
       - patch
-      - rule_3.6.5
+      - rule_3.5.2.5
 
-- name: "SCORED | 3.6.5 | PATCH | Ensure firewall rules exist for all open ports"
+# 3.5.3 Configure nftables
+
+# 3.5.3.1 Ensure iptables are flushed 
+
+# 3.5.3.2 Ensure a table exists
+
+# 3.5.3.3 Ensure base chains exist
+
+- name: "SCORED | 3.5.4.1.1 | PATCH | Ensure default deny firewall policy"
   command: /bin/true
   changed_when: false
   when:
@@ -498,10 +461,62 @@
       - level1
       - scored
       - patch
-      - rule_3.6.5
+      - rule_3.5.4.1.1
       - notimplemented
 
-- name: "NOTSCORED | 3.7 | PATCH | Ensure wireless interfaces are disabled"
+- name: "SCORED | 3.5.4.1.2 | PATCH | Ensure loopback traffic is configured"
+  command: /bin/true
+  changed_when: false
+  when:
+      - ubuntu1804cis_firewall == "iptables"
+      - ubuntu1804cis_setup_firewall
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_3.5.4.1.2
+      - notimplemented
+
+- name: "NOTSCORED | 3.5.4.1.3 | PATCH | Ensure outbound connections are configured "
+  command: /bin/true
+  changed_when: false
+  when:
+      - ubuntu1804cis_firewall == "iptables"
+      - ubuntu1804cis_setup_firewall
+  tags:
+      - level1
+      - notscored
+      - patch
+      - rule_3.5.4.1.3
+      - notimplemented
+
+
+- name: "SCORED | 3.5.4.1.4 | PATCH | Ensure firewall rules exist for all open ports"
+  command: /bin/true
+  changed_when: false
+  when:
+      - ubuntu1804cis_firewall == "iptables"
+      - ubuntu1804cis_setup_firewall
+  tags:
+      - level1
+      - scored
+      - patch
+      - rule_3.5.2.5
+      - notimplemented
+
+# IPv6 is disabled in 3.3.3, this section will need to be implemented if enabled
+
+# 3.5.4.2 Configure IPv6 ip6tables
+
+# 3.5.4.2.1 Ensure IPv6 default deny firewall policy (Scored)
+
+# 3.5.4.2.2 Ensure IPv6 loopback traffic is configured (Scored)
+
+# 3.5.4.2.3 Ensure IPv6 outbound and established connections are configured (Not Scored)
+
+# 3.5.4.2.4 Ensure IPv6 firewall rules exist for all open ports (Not Scored)
+
+- name: "NOTSCORED | 3.6 | PATCH | Ensure wireless interfaces are disabled"
   command: /bin/true
   changed_when: false
   tags:
@@ -510,3 +525,16 @@
       - patch
       - rule_3.7
       - notimplemented
+
+- name: "NOTSCORED | 3.7 | PATCH | Ensure IPv6 is disabled"
+  lineinfile:
+      dest: /etc/modprobe.d/CIS.conf
+      regexp: "^(#)?options ipv6 disable="
+      line: "options ipv6 disable=1"
+      create: true
+  when: not ubuntu1804cis_ipv6_required
+  tags:
+      - level1
+      - notscored
+      - patch
+      - rule_3.7
