@@ -648,12 +648,6 @@
       - patch
       - rule_1.4.1
 
-# 1.3.1 Ensure sudo is installed (Scored)     
-
-# 1.3.2 Ensure sudo commands use pty (Scored)
-
-# 1.3.3 Ensure sudo log file exists (Scored)
-
 - name: "SCORED | 1.4.1 | PATCH | Ensure AIDE is installed"
   apt:
       name:
