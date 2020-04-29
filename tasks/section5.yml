@@ -338,6 +338,21 @@
 
 # 5.2.13 Ensure only strong Ciphers are used (Scored)
 
+- name: "SCORED | 5.2.13 | PATCH |  Ensure only strong Ciphers are used"
+  lineinfile:
+      state: present
+      dest: /etc/ssh/sshd_config
+      regexp: '^Ciphers'
+      line: 'Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128- gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr'
+  when:
+      - ubuntu1804cis_rule_5_2_13
+  tags:
+      - level1
+      - scored
+      - patch
+      - sshd
+      - rule_5.2.13
+
 - name: "SCORED | 5.2.14 | PATCH | Ensure only approved MAC algorithms are used"
   lineinfile:
       state: present
@@ -354,6 +369,21 @@
       - rule_5.2.14
 
 # 5.2.15 Ensure only strong Key Exchange algorithms are used (Scored)
+
+- name: "SCORED | 5.2.15 | PATCH | Ensure only strong Key Exchange algorithms are used"
+  lineinfile:
+      state: present
+      dest: /etc/ssh/sshd_config
+      regexp: '^KexAlgorithms'
+      line: 'KexAlgorithms curve25519-sha256,curve25519-sha256@libssh.org,diffie-hellman- group14-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18- sha512,ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256,diffie- hellman-group-exchange-sha256'
+  when:
+      - ubuntu1804cis_rule_5_2_15
+  tags:
+      - level1
+      - scored
+      - patch
+      - sshd
+      - rule_5.2.15
 
 
 - name: "SCORED | 5.2.16 | PATCH | Ensure SSH Idle Timeout Interval is configured"
