@@ -336,8 +336,6 @@
       - sshd
       - rule_5.2.12
 
-# 5.2.13 Ensure only strong Ciphers are used (Scored)
-
 - name: "SCORED | 5.2.13 | PATCH |  Ensure only strong Ciphers are used"
   lineinfile:
       state: present
@@ -367,8 +365,6 @@
       - patch
       - sshd
       - rule_5.2.14
-
-# 5.2.15 Ensure only strong Key Exchange algorithms are used (Scored)
 
 - name: "SCORED | 5.2.15 | PATCH | Ensure only strong Key Exchange algorithms are used"
   lineinfile:
@@ -500,7 +496,37 @@
 
 # 5.2.22 Ensure SSH MaxStartups is configured (Scored)
 
+- name: "SCORED | 5.2.22 | PATCH | Ensure SSH MaxStartups is configured"
+  lineinfile:
+      state: present
+      dest: /etc/ssh/sshd_config
+      regexp: '.*MaxStartups'
+      line: 'maxstartups 10:30:60'
+  when:
+      - ubuntu1804cis_rule_5_2_22
+  tags:
+      - level1
+      - scored
+      - patch
+      - sshd
+      - rule_5.2.22
+
 # 5.2.23 Ensure SSH MaxSessions is set to 4 or less (Scored)
+
+- name: "SCORED | 5.2.23 | PATCH | Ensure SSH MaxSessions is set to 4 or less"
+  lineinfile:
+      state: present
+      dest: /etc/ssh/sshd_config
+      regexp: '.*MaxSessions'
+      line: 'MaxSessions 4'
+  when:
+      - ubuntu1804cis_rule_5_2_23
+  tags:
+      - level1
+      - scored
+      - patch
+      - sshd
+      - rule_5.2.23
 
 - name: "SCORED | 5.3.1 | PATCH | Ensure password creation requirements are configured"
   block:
